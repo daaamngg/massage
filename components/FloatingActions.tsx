@@ -23,7 +23,7 @@ function Action({
       target={href.startsWith("tel:") ? undefined : "_blank"}
       rel={href.startsWith("tel:") ? undefined : "noopener noreferrer"}
       aria-label={label}
-      className="group flex items-center justify-end gap-2.5"
+      className="group pointer-events-auto flex items-center justify-end gap-2.5"
     >
       <span
         className={`pointer-events-none hidden translate-x-2 whitespace-nowrap rounded-full px-4 py-2 text-sm opacity-0 shadow-lg transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100 sm:block ${
@@ -55,7 +55,9 @@ function Action({
 
 export default function FloatingActions() {
   return (
-    <div className="fixed bottom-5 right-4 z-40 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
+    // The container is click-through: its invisible hover labels are wide enough
+    // to sit over footer links otherwise. Only the anchors themselves take clicks.
+    <div className="pointer-events-none fixed bottom-5 right-4 z-40 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
       {site.max && (
         <Action href={site.max} label="Написать в MAX">
           <Send size={20} />
