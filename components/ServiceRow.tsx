@@ -15,7 +15,12 @@ export function ServiceRow({ item }: { item: ServiceItem }) {
           <p className="text-[15px] leading-snug text-text sm:text-base">
             {item.name}
           </p>
-          <p className="mt-1 flex flex-wrap items-center gap-x-2 text-sm">
+          {item.effect && (
+            <p className="mt-0.5 text-[13px] leading-snug text-text-dim">
+              {item.effect}
+            </p>
+          )}
+          <p className="mt-1.5 flex flex-wrap items-center gap-x-2 text-sm">
             <span className="font-medium text-gold">
               {item.price.toLocaleString("ru-RU")} ₽
             </span>

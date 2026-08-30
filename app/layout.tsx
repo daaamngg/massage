@@ -75,6 +75,22 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ru" className={`${cormorant.variable} ${manrope.variable}`}>
+      <head>
+        {/* Hero background is a CSS background — preload it so the first screen
+            paints immediately instead of after the stylesheet resolves. */}
+        <link
+          rel="preload"
+          as="image"
+          href="/hero.jpg"
+          media="(min-width: 641px)"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/hero-mobile.jpg"
+          media="(max-width: 640px)"
+        />
+      </head>
       <body>
         {children}
         <script

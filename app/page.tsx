@@ -4,6 +4,7 @@ import About from "@/components/About";
 import Services from "@/components/Services";
 import Advantages from "@/components/Advantages";
 import Masters from "@/components/Masters";
+import FirstVisit from "@/components/FirstVisit";
 import Reviews from "@/components/Reviews";
 import Gift from "@/components/Gift";
 import FAQ from "@/components/FAQ";
@@ -64,6 +65,7 @@ export default function Home() {
           <Services />
           <Advantages />
           <Masters />
+          <FirstVisit />
           <Reviews />
           <Gift />
           <FAQ />

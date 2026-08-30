@@ -36,7 +36,7 @@ export default function About() {
       {/* Blur bridge anchored exactly to the hero/About boundary — half in each
           section, fading out at both ends so it adds no edge of its own.
           Lives here (not in Hero) so it paints above the hero and blurs it. */}
-      <div className="seam-blur pointer-events-none absolute inset-x-0 top-0 h-[26vh] -translate-y-1/2 backdrop-blur-2xl" />
+      <div className="seam-blur pointer-events-none absolute inset-x-0 top-0 h-[26vh] -translate-y-1/2 backdrop-blur-lg" />
 
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">

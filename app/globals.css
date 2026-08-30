@@ -159,6 +159,9 @@
      The blur strength comes from Tailwind's backdrop-blur utility on the element —
      declaring backdrop-filter here gets stripped by the CSS minifier. */
   .seam-blur {
+    /* Own compositor layer so scrolling doesn't repaint the blur each frame. */
+    transform: translateZ(0);
+    will-change: transform;
     mask-image: linear-gradient(
       to bottom,
       transparent 0%,
