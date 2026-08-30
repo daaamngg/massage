@@ -3,9 +3,9 @@ import { Reveal } from "./Reveal";
 import { GiftCard } from "./GiftCard";
 
 const gifts = [
+  { title: "Сертификат", amount: "2 500 ₽", value: "Подарочный сертификат — 2 500 ₽" },
   { title: "Сертификат", amount: "3 000 ₽", value: "Подарочный сертификат — 3 000 ₽" },
   { title: "Сертификат", amount: "5 000 ₽", value: "Подарочный сертификат — 5 000 ₽" },
-  { title: "Сертификат", amount: "10 000 ₽", value: "Подарочный сертификат — 10 000 ₽" },
   { title: "Номинал", amount: "на выбор", value: "Подарочный сертификат (номинал на выбор)" },
 ];
 
