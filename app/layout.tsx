@@ -45,6 +45,7 @@ export const metadata: Metadata = {
     siteName: site.shortName,
   },
   robots: { index: true, follow: true },
+  verification: { yandex: "da5554f6eae4eec3" },
 };
 
 const jsonLd = {
