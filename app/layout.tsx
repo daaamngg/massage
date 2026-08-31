@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
 import "./globals.css";
 import { site, serviceCategories } from "@/lib/site";
+import { Metrika } from "@/components/Metrika";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -154,6 +155,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <Metrika id={site.metrikaId} />
       </body>
     </html>
   );

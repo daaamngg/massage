@@ -29,6 +29,7 @@ export const site = {
   yandexMaps:
     "https://yandex.ru/maps/org/masterskaya_massazha_i_kosmetologii/42775550453/",
   twoGis: "", // ссылка на карточку 2ГИС — заполнить, когда подтвердим
+  metrikaId: "112110500", // Яндекс.Метрика
 };
 
 export const locations = [
