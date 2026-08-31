@@ -24,7 +24,11 @@ export const site = {
   // Отдельное фото для телефонов (вертикальное/квадратное). Пусто = берётся heroImage.
   heroImageMobile: "/hero-mobile.jpg",
   workingHours: "По предварительной записи",
-  domain: "https://natalia-massage.ru", // placeholder — заменим на реальный домен
+  domain: "https://nataliahasanshina.ru",
+  // Карточки организации — используются в микроразметке для поисковиков.
+  yandexMaps:
+    "https://yandex.ru/maps/org/masterskaya_massazha_i_kosmetologii/42775550453/",
+  twoGis: "", // ссылка на карточку 2ГИС — заполнить, когда подтвердим
 };
 
 export const locations = [

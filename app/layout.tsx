@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
 import "./globals.css";
-import { site } from "@/lib/site";
+import { site, serviceCategories } from "@/lib/site";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -50,24 +50,80 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "HealthAndBeautyBusiness",
+  "@id": `${site.domain}/#organization`,
   name: site.name,
+  alternateName: site.shortName,
+  url: site.domain,
   description:
-    "Массаж и косметология в Самаре с 2011 года. Авторские методики, опытные мастера.",
+    "Массаж и косметология в Самаре с 2011 года. Авторские методики, опытные мастера: классический, тайский, спортивный, антицеллюлитный массаж, стоун-терапия, СПА-программы, уход по лицу.",
   telephone: site.phoneHref,
   foundingDate: "2011",
-  priceRange: "₽₽",
+  priceRange: "800–3500 ₽",
+  currenciesAccepted: "RUB",
+  image: `${site.domain}/hero.jpg`,
+  areaServed: { "@type": "City", name: "Самара" },
   address: {
     "@type": "PostalAddress",
     streetAddress: "ул. Дыбенко, 95",
     addressLocality: "Самара",
+    addressRegion: "Самарская область",
     addressCountry: "RU",
+  },
+  openingHoursSpecification: {
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ],
+    description: "По предварительной записи",
   },
   aggregateRating: {
     "@type": "AggregateRating",
     ratingValue: "5",
     reviewCount: "9",
+    bestRating: "5",
   },
-  sameAs: [site.telegramChannel, site.vkCommunity],
+  department: {
+    "@type": "HealthAndBeautyBusiness",
+    name: `${site.shortName} — Южный город`,
+    telephone: site.phoneHref,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "мкр-н Южный город, ул. Челышевская",
+      addressLocality: "Самара",
+      addressRegion: "Самарская область",
+      addressCountry: "RU",
+    },
+  },
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Услуги мастерской",
+    itemListElement: serviceCategories.map((cat) => ({
+      "@type": "OfferCatalog",
+      name: cat.title,
+      itemListElement: cat.items.map((it) => ({
+        "@type": "Offer",
+        priceCurrency: "RUB",
+        price: it.price,
+        itemOffered: {
+          "@type": "Service",
+          name: it.name,
+          ...(it.effect ? { description: it.effect } : {}),
+        },
+      })),
+    })),
+  },
+  sameAs: [
+    site.telegramChannel,
+    site.vkCommunity,
+    site.yandexMaps,
+    site.twoGis,
+  ].filter(Boolean),
 };
 
 export default function RootLayout({
