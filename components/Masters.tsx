@@ -10,7 +10,7 @@ export default function Masters() {
         <Reveal>
           <SectionHeading
             overline="Наша команда"
-            title="Мастера, которым доверяют"
+            title="Мастера массажа, которым доверяют"
             subtitle="Каждый — со своей специализацией и авторскими техниками. Вы в надёжных руках."
           />
           <p className="mt-5 flex items-center gap-2 text-sm text-text-dim">

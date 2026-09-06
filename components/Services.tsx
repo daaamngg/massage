@@ -11,8 +11,8 @@ export default function Services() {
         <Reveal>
           <SectionHeading
             overline="Услуги и цены"
-            title="Более 30 программ для тела и лица"
-            subtitle="Классический и лечебный массаж, авторские техники, СПА-ритуалы, уход за лицом и программы для двоих."
+            title="Более 30 программ массажа в Самаре"
+            subtitle="Классический и лечебный массаж, авторские техники, СПА-ритуалы, уход за лицом и программы для двоих — в двух студиях Самары."
           />
           <p className="mt-5 flex items-center gap-2 text-sm text-text-dim">
             <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-gold/50 text-base leading-none text-gold">
