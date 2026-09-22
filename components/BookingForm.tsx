@@ -29,6 +29,12 @@ export default function BookingForm() {
   );
   const [error, setError] = useState("");
 
+  // Цель в Метрике: сколько людей выбирает ВК вместо формы.
+  function onVkClick() {
+    const ym = (window as unknown as { ym?: (...args: unknown[]) => void }).ym;
+    ym?.(Number(site.metrikaId), "reachGoal", "vk_write");
+  }
+
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     if (status === "loading") return;
@@ -89,9 +95,41 @@ export default function BookingForm() {
               </button>
             </div>
           ) : (
+            <>
+            {/* Кто пишет в ВК сам — приходит сразу с профилем, и чат открыт
+                в обе стороны. Наталья консультирует именно там. */}
+            <a
+              href={site.vkWrite}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={onVkClick}
+              className="mt-10 flex flex-col gap-4 rounded-2xl border border-gold/30 bg-surface/50 p-5 transition-colors hover:border-gold sm:flex-row sm:items-center sm:justify-between sm:p-6"
+            >
+              <span className="flex items-start gap-3">
+                <MessageCircle size={22} className="mt-0.5 shrink-0 text-gold" />
+                <span>
+                  <span className="block font-serif text-lg text-cream">
+                    Удобнее во ВКонтакте?
+                  </span>
+                  <span className="mt-0.5 block text-sm text-text-dim">
+                    Напишите Наталье — ответит прямо там.
+                  </span>
+                </span>
+              </span>
+              <span className="btn-outline shrink-0 px-5 py-2 text-sm">
+                Написать в ВК
+              </span>
+            </a>
+
+            <p className="mt-6 flex items-center gap-3 text-xs uppercase tracking-widest text-text-dim">
+              <span className="h-px flex-1 bg-border" />
+              или оставьте заявку
+              <span className="h-px flex-1 bg-border" />
+            </p>
+
             <form
               onSubmit={onSubmit}
-              className="mt-10 rounded-2xl border border-border bg-surface/40 p-6 sm:p-8"
+              className="mt-6 rounded-2xl border border-border bg-surface/40 p-6 sm:p-8"
             >
               {/* Honeypot — hidden from users, catches bots */}
               <input
@@ -238,6 +276,7 @@ export default function BookingForm() {
                 )}
               </div>
             </form>
+            </>
           )}
         </Reveal>
       </div>

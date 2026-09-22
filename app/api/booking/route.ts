@@ -12,6 +12,72 @@ const MAX = {
   services: 40,
 };
 
+function splitIds(v: string | undefined) {
+  return (v || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+async function sendTelegram(token: string, chatId: string, text: string) {
+  try {
+    const tg = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text,
+        disable_web_page_preview: true,
+      }),
+    });
+    if (!tg.ok) {
+      console.error(
+        `Telegram sendMessage failed for ${chatId}:`,
+        tg.status,
+        await tg.text()
+      );
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error(`Telegram request threw for ${chatId}:`, err);
+    return false;
+  }
+}
+
+// Сообщение от имени сообщества ВК. Получатель должен один раз написать
+// сообществу или разрешить ему сообщения — иначе ВК не даст отправить.
+async function sendVk(token: string, userId: string, text: string) {
+  try {
+    const res = await fetch("https://api.vk.com/method/messages.send", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        user_id: userId,
+        random_id: String(Math.floor(Math.random() * 2_147_483_647)),
+        message: text,
+        dont_parse_links: "1",
+        access_token: token,
+        v: "5.199",
+      }),
+    });
+    // ВК отвечает 200 даже на ошибку — смотреть надо поле error.
+    const data = await res.json().catch(() => null);
+    if (!res.ok || !data || data.error) {
+      console.error(
+        `VK messages.send failed for ${userId}:`,
+        res.status,
+        data?.error?.error_msg
+      );
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error(`VK request threw for ${userId}:`, err);
+    return false;
+  }
+}
+
 // Lightweight per-IP rate limit (per server instance).
 const hits = new Map<string, number[]>();
 function isRateLimited(ip: string) {
@@ -82,20 +148,6 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
-
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  // Supports several recipients: "123456,789012" — each gets the same message.
-  const chatIds = (process.env.TELEGRAM_CHAT_ID || "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-  if (!token || chatIds.length === 0) {
-    return NextResponse.json(
-      { ok: false, error: "Сервис записи временно недоступен" },
-      { status: 500 }
-    );
-  }
-
   const lines = [
     "🆕 Новая заявка с сайта",
     "",
@@ -116,40 +168,28 @@ export async function POST(req: Request) {
 
   const text = lines.join("\n");
 
-  try {
-    // Deliver to every recipient; the request succeeds if at least one lands,
-    // so a single unreachable chat (e.g. someone never pressed Start) can't
-    // silently lose the lead.
-    const results = await Promise.all(
-      chatIds.map(async (id) => {
-        try {
-          const tg = await fetch(
-            `https://api.telegram.org/bot${token}/sendMessage`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                chat_id: id,
-                text,
-                disable_web_page_preview: true,
-              }),
-            }
-          );
-          if (!tg.ok) {
-            console.error(
-              `Telegram sendMessage failed for ${id}:`,
-              tg.status,
-              await tg.text()
-            );
-            return false;
-          }
-          return true;
-        } catch (err) {
-          console.error(`Telegram request threw for ${id}:`, err);
-          return false;
-        }
-      })
+  // Каналы доставки: Telegram и/или сообщения от сообщества ВК.
+  // Получателей можно несколько через запятую — каждый получит то же самое.
+  const tgToken = process.env.TELEGRAM_BOT_TOKEN;
+  const tgChats = splitIds(process.env.TELEGRAM_CHAT_ID);
+  const vkToken = process.env.VK_GROUP_TOKEN;
+  const vkUsers = splitIds(process.env.VK_NOTIFY_USER_IDS);
+
+  const jobs: Promise<boolean>[] = [];
+  if (tgToken) for (const id of tgChats) jobs.push(sendTelegram(tgToken, id, text));
+  if (vkToken) for (const id of vkUsers) jobs.push(sendVk(vkToken, id, text));
+
+  if (jobs.length === 0) {
+    return NextResponse.json(
+      { ok: false, error: "Сервис записи временно недоступен" },
+      { status: 500 }
     );
+  }
+
+  try {
+    // Заявка принята, если дошла хотя бы до одного получателя: один
+    // недоступный чат (например, не нажали «Старт») не должен её потерять.
+    const results = await Promise.all(jobs);
 
     if (!results.some(Boolean)) {
       return NextResponse.json(
