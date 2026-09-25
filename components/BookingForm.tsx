@@ -1,14 +1,9 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import {
-  X,
-  Loader2,
-  CheckCircle2,
-  Phone,
-  MessageCircle,
-  Send,
-} from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
+import { motion } from "motion/react";
+import { X, Phone, MessageCircle, Send } from "lucide-react";
+import { CheckMark, MorphSubmit, type MorphPhase } from "./MorphSubmit";
 import { useSelection } from "./SelectionContext";
 import { SectionHeading } from "./SectionHeading";
 import { Reveal } from "./Reveal";
@@ -28,6 +23,18 @@ export default function BookingForm() {
     "idle"
   );
   const [error, setError] = useState("");
+  // Карточка «принято» появляется не сразу: сначала кнопка дорисовывает
+  // галочку, иначе морф просто не успевают увидеть.
+  const [showCard, setShowCard] = useState(false);
+
+  useEffect(() => {
+    if (status !== "ok") return;
+    const t = setTimeout(() => {
+      clear();
+      setShowCard(true);
+    }, 1100);
+    return () => clearTimeout(t);
+  }, [status, clear]);
 
   // Цель в Метрике: сколько людей выбирает ВК вместо формы.
   function onVkClick() {
@@ -57,7 +64,6 @@ export default function BookingForm() {
       if (!res.ok || !data.ok)
         throw new Error(data.error || "Не удалось отправить заявку");
       setStatus("ok");
-      clear();
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "Не удалось отправить заявку");
@@ -77,9 +83,22 @@ export default function BookingForm() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          {status === "ok" ? (
-            <div className="mt-10 rounded-2xl border border-gold/30 bg-surface/50 p-10 text-center">
-              <CheckCircle2 className="mx-auto text-gold" size={44} />
+          {showCard ? (
+            <motion.div
+              key="done"
+              initial={{ opacity: 0, filter: "blur(10px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-10 rounded-2xl border border-gold/30 bg-surface/50 p-10 text-center"
+            >
+              {/* Тот же кружок, что был кнопкой: layoutId переносит его сюда */}
+              <motion.span
+                layoutId="booking-check"
+                transition={{ type: "spring", stiffness: 300, damping: 32 }}
+                className="badge-gold mx-auto flex h-14 w-14"
+              >
+                <CheckMark />
+              </motion.span>
               <h3 className="mt-4 font-serif text-2xl text-cream">
                 Заявка принята!
               </h3>
@@ -88,14 +107,17 @@ export default function BookingForm() {
                 запись.
               </p>
               <button
-                onClick={() => setStatus("idle")}
+                onClick={() => {
+                  setShowCard(false);
+                  setStatus("idle");
+                }}
                 className="btn-outline mt-6 px-6 py-2.5"
               >
                 Отправить ещё одну
               </button>
-            </div>
+            </motion.div>
           ) : (
-            <>
+            <div>
             {/* Кто пишет в ВК сам — приходит сразу с профилем, и чат открыт
                 в обе стороны. Наталья консультирует именно там. */}
             <a
@@ -231,19 +253,18 @@ export default function BookingForm() {
                 <p className="mt-4 text-sm text-red-400">{error}</p>
               )}
 
-              <button
-                type="submit"
-                disabled={status === "loading"}
-                className="btn-gold mt-6 w-full py-3.5 text-base disabled:opacity-70"
-              >
-                {status === "loading" ? (
-                  <>
-                    <Loader2 className="animate-spin" size={18} /> Отправляем…
-                  </>
-                ) : (
-                  "Отправить заявку"
-                )}
-              </button>
+              <MorphSubmit
+                className="mt-6"
+                phase={
+                  (status === "loading"
+                    ? "loading"
+                    : status === "ok"
+                      ? "ok"
+                      : "idle") satisfies MorphPhase
+                }
+                label="Отправить заявку"
+                morphId="booking-check"
+              />
 
               <p className="mt-4 text-center text-xs text-text-dim">
                 {site.responseHours}
@@ -276,7 +297,7 @@ export default function BookingForm() {
                 )}
               </div>
             </form>
-            </>
+            </div>
           )}
         </Reveal>
       </div>
