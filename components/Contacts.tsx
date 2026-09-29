@@ -15,6 +15,10 @@ const orgUrl =
   "https://yandex.ru/maps/org/masterskaya_massazha_i_kosmetologii/42775550453/";
 const mapSrc =
   "https://yandex.ru/map-widget/v1/?mode=search&oid=42775550453&ol=biz&z=16";
+// Живой рейтинг из Яндекс.Бизнеса. theme=dark — иначе на тёмном фоне
+// светится белый прямоугольник. Ведёт сразу в отзывы карточки.
+const ratingBadgeSrc =
+  "https://yandex.ru/sprav/widget/rating-badge/42775550453?type=rating&theme=dark";
 
 export default function Contacts() {
   return (
@@ -46,14 +50,24 @@ export default function Contacts() {
                   <MapPin size={16} className="flex-shrink-0 text-gold" />
                   ул. Дыбенко, 95 · Самара
                 </p>
-                <a
-                  href={orgUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-3 inline-flex items-center gap-1.5 text-sm text-text-dim transition-colors hover:text-gold"
-                >
-                  Открыть в Яндекс.Картах <ExternalLink size={13} />
-                </a>
+                <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-3">
+                  <iframe
+                    src={ratingBadgeSrc}
+                    title="Рейтинг мастерской в Яндексе"
+                    loading="lazy"
+                    width={150}
+                    height={50}
+                    className="rounded-lg border border-border"
+                  />
+                  <a
+                    href={orgUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm text-text-dim transition-colors hover:text-gold"
+                  >
+                    Открыть в Яндекс.Картах <ExternalLink size={13} />
+                  </a>
+                </div>
               </div>
             </div>
           </Reveal>
