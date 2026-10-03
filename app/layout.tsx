@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Manrope } from "next/font/google";
 import "./globals.css";
 import { site, serviceCategories } from "@/lib/site";
 import { Metrika } from "@/components/Metrika";
+import { CookieNotice } from "@/components/CookieNotice";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -87,7 +88,7 @@ const jsonLd = {
   aggregateRating: {
     "@type": "AggregateRating",
     ratingValue: "5",
-    reviewCount: "9",
+    reviewCount: "7",
     bestRating: "5",
   },
   department: {
@@ -156,6 +157,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <Metrika id={site.metrikaId} />
+        <CookieNotice />
       </body>
     </html>
   );

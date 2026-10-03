@@ -72,6 +72,9 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 border-t border-border/50 pt-6 text-center text-xs text-text-dim">
+          <p className="mb-3 text-[11px] uppercase tracking-[0.12em] text-text-dim/80">
+            Имеются противопоказания. Необходима консультация специалиста.
+          </p>
           © {year} Мастерская массажа и косметологии Натальи Хасаншиной.
           Работаем с 2011 года.
           <p className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1">
