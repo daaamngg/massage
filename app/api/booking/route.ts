@@ -136,6 +136,15 @@ export async function POST(req: Request) {
         .filter(Boolean)
     : [];
 
+  // Без согласия на обработку ПД заявку не принимаем — проверка и на сервере,
+  // чтобы её нельзя было обойти, отправив запрос в обход формы.
+  if (body.consent !== true) {
+    return NextResponse.json(
+      { ok: false, error: "Нужно согласие на обработку персональных данных" },
+      { status: 400 }
+    );
+  }
+
   if (!name || !phone) {
     return NextResponse.json(
       { ok: false, error: "Укажите имя и телефон" },
@@ -165,6 +174,12 @@ export async function POST(req: Request) {
   }
   if (datetime) lines.push("", `🕐 Желаемое время: ${datetime}`);
   if (comment) lines.push("", `💬 Комментарий: ${comment}`);
+
+  // Фиксация согласия: базы нет, поэтому запись о нём живёт в самой заявке.
+  const consentAt = new Date().toLocaleString("ru-RU", {
+    timeZone: "Europe/Samara",
+  });
+  lines.push("", `✅ Согласие на обработку ПД: дано ${consentAt} (Самара)`);
 
   const text = lines.join("\n");
 

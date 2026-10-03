@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { motion } from "motion/react";
 import { X, Phone, MessageCircle, Send } from "lucide-react";
 import { CheckMark, MorphSubmit, type MorphPhase } from "./MorphSubmit";
@@ -19,6 +20,8 @@ export default function BookingForm() {
   const [datetime, setDatetime] = useState("");
   const [comment, setComment] = useState("");
   const [website, setWebsite] = useState(""); // honeypot
+  // Согласие на обработку ПД: галочка по умолчанию снята — так требует закон.
+  const [consent, setConsent] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">(
     "idle"
   );
@@ -58,12 +61,14 @@ export default function BookingForm() {
           datetime,
           comment,
           website,
+          consent,
         }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.ok)
         throw new Error(data.error || "Не удалось отправить заявку");
       setStatus("ok");
+      setConsent(false); // каждая заявка — своё согласие
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "Не удалось отправить заявку");
@@ -248,6 +253,46 @@ export default function BookingForm() {
                 onChange={(e) => setComment(e.target.value)}
                 maxLength={800}
               />
+              <p className="mt-2 text-xs text-text-dim">
+                Пожалуйста, не пишите здесь о здоровье — мастер обсудит это
+                с вами лично.
+              </p>
+
+              <div className="mt-5 flex items-start gap-3">
+                <input
+                  id="booking-consent"
+                  type="checkbox"
+                  required
+                  checked={consent}
+                  onChange={(e) => setConsent(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-gold"
+                />
+                <div className="text-sm leading-snug">
+                  <label
+                    htmlFor="booking-consent"
+                    className="cursor-pointer text-text"
+                  >
+                    Даю согласие на обработку персональных данных
+                  </label>
+                  <p className="mt-1 text-xs text-text-dim">
+                    <Link
+                      href="/consent"
+                      target="_blank"
+                      className="text-gold underline-offset-2 hover:underline"
+                    >
+                      Текст согласия
+                    </Link>
+                    {" · "}
+                    <Link
+                      href="/privacy"
+                      target="_blank"
+                      className="text-gold underline-offset-2 hover:underline"
+                    >
+                      Политика обработки данных
+                    </Link>
+                  </p>
+                </div>
+              </div>
 
               {status === "error" && (
                 <p className="mt-4 text-sm text-red-400">{error}</p>
