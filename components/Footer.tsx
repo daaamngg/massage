@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { site, nav } from "@/lib/site";
+import { operator } from "@/lib/legal";
 import { VkIcon, TelegramIcon, MaxIcon } from "./icons";
 
 export default function Footer() {
@@ -77,6 +78,11 @@ export default function Footer() {
           </p>
           © {year} Мастерская массажа и косметологии Натальи Хасаншиной.
           Работаем с 2011 года.
+          {/* Прямо называем владельца: иначе по умолчанию им считается
+              администратор домена, а домен оформлен на другого человека. */}
+          <p className="mt-2">
+            Владелец сайта — {operator.fullName}, {operator.status}.
+          </p>
           <p className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1">
             <Link href="/privacy" className="transition-colors hover:text-gold">
               Политика обработки персональных данных
