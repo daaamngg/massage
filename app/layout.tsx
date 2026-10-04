@@ -137,18 +137,7 @@ export default function RootLayout({
       <head>
         {/* Hero background is a CSS background — preload it so the first screen
             paints immediately instead of after the stylesheet resolves. */}
-        <link
-          rel="preload"
-          as="image"
-          href="/hero.jpg"
-          media="(min-width: 641px)"
-        />
-        <link
-          rel="preload"
-          as="image"
-          href="/hero-mobile.jpg"
-          media="(max-width: 640px)"
-        />
+        <link rel="preload" as="image" href="/hero.jpg" />
       </head>
       <body>
         {children}

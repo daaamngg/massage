@@ -22,7 +22,7 @@ export const site = {
   // Положить файл в /public и указать путь, например "/hero.jpg".
   heroImage: "/hero.jpg",
   // Отдельное фото для телефонов (вертикальное/квадратное). Пусто = берётся heroImage.
-  heroImageMobile: "/hero-mobile.jpg",
+  heroImageMobile: "",
   workingHours: "По предварительной записи",
   domain: "https://nataliahasanshina.ru",
   // Карточки организации — используются в микроразметке для поисковиков.
